@@ -32,20 +32,17 @@ def matchATSMethod(dir_path, rematch):
                     f.close()
 
 
-# 将 .h 文件路径转为 .m 文件路径
-def getOCFileName(s):
-    return s[::-1].replace("h", "m", 1)[::-1]  
-
 # 打开 .swift 文件，遍历每一行，是否符合 addSubview( 格式，符合输出当前类名、以及所在行
 def checkATSMethod(root, file_name, match):
-    ats_symbol_containing = 'addSubview('
-    #file_name = getOCFileName(file_name)
+    ats_symbol_containing = r'[\s\S]*?(self.addSubview\(|[^\.]addSubview\()'
+    if re.match(r'HomePageCollectionViewTableViewCell.swift',file_name):
+        print(file_name + '开始了')
     with open(os.path.join(root, file_name), 'r+') as f:
         line = f.readline()    
         idx = 0 
         while line:
             idx += 1
-            if ats_symbol_containing in line: # 命中 
+            if re.match(ats_symbol_containing, line):
                 print(file_name + ' 第 ' + str(idx) + ' 行, 路径为' + root + '\n' )  
                 idx = 0
                 break
